@@ -134,8 +134,12 @@ led_set(gboolean state)
 static gboolean
 flash_toggle(gpointer data)
 {
+	gboolean countless;
+	countless = purple_prefs_get_bool("/plugins/core/eionrobb-capsnot/countless");
+
 	flash_state = !flash_state;
-	flashes_remaining--;
+	if(!countless)
+		flashes_remaining--;
 	
 	led_set(flash_state);
 	
@@ -248,6 +252,11 @@ plugin_config_frame(PurplePlugin *plugin)
 	
 	ppref = purple_plugin_pref_new_with_label("Flash Rate:");
 	purple_plugin_pref_frame_add(frame, ppref);
+
+	ppref = purple_plugin_pref_new_with_name_and_label(
+							"/plugins/core/eionrobb-capsnot/countless",
+							"Unlimited");
+	purple_plugin_pref_frame_add(frame, ppref);
 	
 	ppref = purple_plugin_pref_new_with_name_and_label(
 							"/plugins/core/eionrobb-capsnot/flashcount",
@@ -275,6 +284,7 @@ init_plugin(PurplePlugin *plugin)
 	purple_prefs_add_bool("/plugins/core/eionrobb-capsnot/capslock", FALSE);
 	purple_prefs_add_bool("/plugins/core/eionrobb-capsnot/scrolllock", TRUE);
 	
+	purple_prefs_add_bool("/plugins/core/eionrobb-capsnot/countless", FALSE);
 	purple_prefs_add_int("/plugins/core/eionrobb-capsnot/flashcount", 8);
 	purple_prefs_add_int("/plugins/core/eionrobb-capsnot/flashseconds", 2);
 }
